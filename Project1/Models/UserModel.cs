@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Project1
+namespace Models
 {
-    public class Employee
+    public class UserModel
     {
-        //User ID
+         //User ID
         public int userID{ get; set; }
         public string Fname{ get; set; }
         public string Lname{ get; set; }
@@ -18,6 +18,5 @@ namespace Project1
         public string password{ get; set; }
      
         //Role subordinate or manager? maybe child classes
-        
     }
 }
