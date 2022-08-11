@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Project1
+namespace Models
 {
-    public class Ticket
+    public class TicketModel
     {
         //ID- from Employee
         
@@ -18,7 +18,6 @@ namespace Project1
         //Status- Approved, pending, or denied
 
         //Amount - Allow amount insertion
-
 
     }
 }

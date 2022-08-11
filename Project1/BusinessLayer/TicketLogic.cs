@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Project1
+namespace BusinessLayer
 {
-    public class TicketMethods
+    public class TicketLogic
     {
-
+        
         //Create ticket method with amount and description
 
         //view ticket method
@@ -16,6 +16,5 @@ namespace Project1
         //approve or deny method. after approved or denied they cannot be changed again
 
 
-        
     }
 }
