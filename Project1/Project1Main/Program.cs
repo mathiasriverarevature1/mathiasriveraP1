@@ -1,4 +1,6 @@
 ﻿using System;
+using BusinessLayer;
+using Models;
 
 namespace Project1
 {
@@ -6,13 +8,16 @@ namespace Project1
     {
         static void Main(string[] args)
         {
-          
-        Console.WriteLine("Welcome to the ticket reimbursmnent system. \nPlease login with your username and password. \nIf you do not have an account then please register.\n");
+        
+        UserLogic userLogic = new UserLogic();
+        Console.WriteLine("Welcome to the ticket reimbursmnent system. \nPlease login with your username and password. \n");
+        Console.Write("Username:");
+        Console.Write("Password:");
 
-          
+
            //User login or register? How does that work?
 
-        Console.WriteLine("Thank you for logging in (insert name). \nAs of now you are a (emp/man) and have these options: ");
+        Console.WriteLine($"Thank you for logging in UserName. \nAs of now you are classified as a (emp/man) and have these options: ");
            
            //User Actions:
 
