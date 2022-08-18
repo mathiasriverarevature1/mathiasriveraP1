@@ -23,11 +23,11 @@ namespace BusinessLayer
             return list;
         }
 
-        public async Task<Request> UpdateRequestsAsync(ApprovalDto approval)
+        public async Task<UpdatedRequestDto> UpdateRequestsAsync(ApprovalDto approvalDto)
         {
-            if (await this._repoLayer.IsManagerAsync(approval.EmployeeID))
+            if (await this._repoLayer.IsManagerAsync(approvalDto.EmployeeID))
             {
-                Request approvedRequest = await this._repoLayer.UpdateRequestsAsync(approval);
+                UpdatedRequestDto approvedRequest = await this._repoLayer.UpdateRequestsAsync(approvalDto.RequestID, approvalDto.Status);
                 return approvedRequest;
             }
             else return null;

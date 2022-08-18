@@ -46,10 +46,53 @@ public class ReimbursementRepoLayer
             return false;
         }
 
-    public Task<Request> UpdateRequestsAsync(ApprovalDto approval)
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="RequestID"></param>
+    /// <param name="Status"></param>
+    /// <returns></returns>
+    public async Task<UpdatedRequestDto> UpdateRequestsAsync(Guid RequestID, int Status)
     {
-        throw new NotImplementedException();
+        SqlConnection conn = new SqlConnection("Server=tcp:mathiasriverasqlserver1.database.windows.net,1433;Initial Catalog=MathiasRiveraSample2;Persist Security Info=False;User ID=MathiasRiveraRevature1;Password=JohnDaniel(9);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+        using (SqlCommand command = new SqlCommand($"UPDATE Request SET Status = @status WHERE RequestID = @id", conn))
+        {
+            command.Parameters.AddWithValue("@id", RequestID); //SQL inj prevention
+            command.Parameters.AddWithValue("Status", Status); //SQL inj prevention
+            conn.Open();
+            int ret = await command.ExecuteNonQueryAsync();
+            if (ret == 1)
+            {
+                conn.Close();
+                UpdatedRequestDto urbi = await this.UpdateRequestByIDAsync(RequestID);
+                return urbi;
+            }
+        }
+        conn.Close();
+        return null;
+    }
+
+    public async Task<UpdatedRequestDto> UpdateRequestByIDAsync(Guid requestID)
+    {
+        SqlConnection conn = new SqlConnection("Server=tcp:mathiasriverasqlserver1.database.windows.net,1433;Initial Catalog=MathiasRiveraSample2;Persist Security Info=False;User ID=MathiasRiveraRevature1;Password=JohnDaniel(9);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+        using (SqlCommand command = new SqlCommand($"SELECT RequestID, FirstName, LastName, Status FROM Employees" +
+            $" LEFT JOIN Request ON EmployeeID = FK_EmployeeID WHERE RequestID = @requestID", conn))
+        {
+            command.Parameters.AddWithValue("@requestid", requestID); //SQL inj prevention
+            conn.Open();
+            SqlDataReader? ret = await command.ExecuteReaderAsync();
+            if (ret.Read())
+            {
+                UpdatedRequestDto r = new UpdatedRequestDto(ret.GetGuid(0), ret.GetString(1), ret.GetString(2), ret.GetInt32(3));
+                conn.Close();
+                return r;
+            }
+        }
+        conn.Close();
+        return null;
     }
 }
-}
+
+
                       
