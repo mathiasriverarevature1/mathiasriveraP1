@@ -5,8 +5,8 @@ using BusinessLayer;
 
 namespace ReimbursementWebAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class ExpenseReimbursementController : ControllerBase
     {
         private readonly ReimbursementBusinessLayer _businessLayer;
@@ -32,11 +32,16 @@ namespace ReimbursementWebAPI.Controllers
                 //return null;
         }
 
-        [HttpPut("UpdateRequestAsync")]
-        public async Task<ActionResult<Request>> UpdateRequestAsync(ApprovalDto approval)
+        [HttpPut("UpdateRequestsAsync")]
+        public async Task<ActionResult<UpdatedRequestDto>> UpdateRequestsAsync(ApprovalDto approval)
         {
-            //send approval dto to business layer
-            Request approvedRequest = await this._businessLayer.UpdateRequestsAsync(approval);
+            if (ModelState.IsValid)
+            {
+                //send approval dto to business layer
+                UpdatedRequestDto approvedRequest = await this._businessLayer.UpdateRequestsAsync(approval);
+                return Ok(approvedRequest);
+            }
+            else return Conflict(approval);//StatusCode(StatusCodes.Status409Conflict);    
         }
 
     }//EOC
