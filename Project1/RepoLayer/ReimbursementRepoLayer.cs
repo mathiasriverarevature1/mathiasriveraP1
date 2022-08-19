@@ -92,6 +92,29 @@ public class ReimbursementRepoLayer
         conn.Close();
         return null;
     }
+
+    public async Task<bool> CheckForPending(Guid requestID)
+    {
+        SqlConnection conn = new SqlConnection("Server=tcp:mathiasriverasqlserver1.database.windows.net,1433;Initial Catalog=MathiasRiveraSample2;Persist Security Info=False;User ID=MathiasRiveraRevature1;Password=JohnDaniel(9);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+        using (SqlCommand command = new SqlCommand($"SELECT * FROM Request WHERE requestID = @id", conn))
+        {
+            command.Parameters.AddWithValue("@id", requestID); //SQL inj prevention
+            conn.Open();
+            SqlDataReader? ret = await command.ExecuteReaderAsync();
+            List<Request> rlist = new List<Request>();
+            while (ret.Read())
+            {
+                Request r = new Request((Guid)ret[0], (Guid)ret[1], ret.GetString(2), ret.GetDecimal(3), ret.GetInt32(4));
+                if (r.Status == 0)
+                {
+                    conn.Close();
+                    return true;
+                }
+            }
+            conn.Close();
+            return false;
+        }
+    }
 }
 
 

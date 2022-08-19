@@ -9,6 +9,7 @@ namespace ReimbursementWebAPI.Controllers
     [Route("api/[controller]")]
     public class ExpenseReimbursementController : ControllerBase
     {
+        //creates intance of business layer class
         private readonly ReimbursementBusinessLayer _businessLayer;
         public ExpenseReimbursementController()
         {
@@ -16,7 +17,7 @@ namespace ReimbursementWebAPI.Controllers
         }
 
         /// <summary>
-        /// Get all the pending requests
+        /// Get all the pending requests by filtering types
         /// </summary>
         /// <returns></returns>
         [HttpGet("RequestsAsync")]
@@ -35,7 +36,7 @@ namespace ReimbursementWebAPI.Controllers
         [HttpPut("UpdateRequestsAsync")]
         public async Task<ActionResult<UpdatedRequestDto>> UpdateRequestsAsync(ApprovalDto approval)
         {
-            if (ModelState.IsValid)
+            if (await this._businessLayer.CheckForPending(approval.RequestID) && ModelState.IsValid)
             {
                 //send approval dto to business layer
                 UpdatedRequestDto approvedRequest = await this._businessLayer.UpdateRequestsAsync(approval);
@@ -43,6 +44,7 @@ namespace ReimbursementWebAPI.Controllers
             }
             else return Conflict(approval);//StatusCode(StatusCodes.Status409Conflict);    
         }
+
 
     }//EOC
 }//EON
