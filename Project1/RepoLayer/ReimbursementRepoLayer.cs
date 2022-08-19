@@ -53,7 +53,7 @@ public class ReimbursementRepoLayer
     /// <param name="RequestID"></param>
     /// <param name="Status"></param>
     /// <returns></returns>
-    public async Task<UpdatedRequestDto> UpdateRequestsAsync(Guid RequestID, int Status)
+    public async Task<UpdatedRequestDto?> UpdateRequestsAsync(Guid RequestID, int Status)
     {
         SqlConnection conn = new SqlConnection("Server=tcp:mathiasriverasqlserver1.database.windows.net,1433;Initial Catalog=MathiasRiveraSample2;Persist Security Info=False;User ID=MathiasRiveraRevature1;Password=JohnDaniel(9);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
         using (SqlCommand command = new SqlCommand($"UPDATE Request SET Status = @status WHERE RequestID = @id", conn))
@@ -65,7 +65,7 @@ public class ReimbursementRepoLayer
             if (ret == 1)
             {
                 conn.Close();
-                UpdatedRequestDto urbi = await this.UpdateRequestByIDAsync(RequestID);
+                UpdatedRequestDto? urbi = await this.UpdateRequestByIDAsync(RequestID);
                 return urbi;
             }
         }
@@ -73,7 +73,7 @@ public class ReimbursementRepoLayer
         return null;
     }
 
-    public async Task<UpdatedRequestDto> UpdateRequestByIDAsync(Guid requestID)
+    public async Task<UpdatedRequestDto?> UpdateRequestByIDAsync(Guid requestID)
     {
         SqlConnection conn = new SqlConnection("Server=tcp:mathiasriverasqlserver1.database.windows.net,1433;Initial Catalog=MathiasRiveraSample2;Persist Security Info=False;User ID=MathiasRiveraRevature1;Password=JohnDaniel(9);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
         using (SqlCommand command = new SqlCommand($"SELECT RequestID, FirstName, LastName, Status FROM Employees" +
@@ -84,7 +84,7 @@ public class ReimbursementRepoLayer
             SqlDataReader? ret = await command.ExecuteReaderAsync();
             if (ret.Read())
             {
-                UpdatedRequestDto r = new UpdatedRequestDto(ret.GetGuid(0), ret.GetString(1), ret.GetString(2), ret.GetInt32(3));
+                UpdatedRequestDto? r = new UpdatedRequestDto(ret.GetGuid(0), ret.GetString(1), ret.GetString(2), ret.GetInt32(3));
                 conn.Close();
                 return r;
             }
@@ -140,7 +140,7 @@ public class ReimbursementRepoLayer
         }
     }
 
-    public async Task<LoginDto> LoginAsync(LoginDto login)
+    public async Task<LoginDto?> LoginAsync(LoginDto login)
     {
         SqlConnection conn = new SqlConnection("Server=tcp:mathiasriverasqlserver1.database.windows.net,1433;Initial Catalog=MathiasRiveraSample2;Persist Security Info=False;User ID=MathiasRiveraRevature1;Password=JohnDaniel(9);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
         using (SqlCommand command = new SqlCommand($"SELECT * FROM Employees WHERE Email = @Email and Password = @Password", conn))
