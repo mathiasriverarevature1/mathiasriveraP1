@@ -39,12 +39,12 @@ namespace ReimbursementWebAPI.Controllers
         /// <param name="approval"></param>
         /// <returns></returns>
         [HttpPut("UpdateRequestsAsync")]
-        public async Task<ActionResult<UpdatedRequestDto>> UpdateRequestsAsync(ApprovalDto approval)
+        public async Task<ActionResult<UpdatedRequestDto?>> UpdateRequestsAsync(ApprovalDto approval)
         {
             if (await this._businessLayer.CheckForPendingAsync(approval.RequestID) && ModelState.IsValid)
             {
                 //send approval dto to business layer
-                UpdatedRequestDto approvedRequest = await this._businessLayer.UpdateRequestsAsync(approval);
+                UpdatedRequestDto? approvedRequest = await this._businessLayer.UpdateRequestsAsync(approval);
                 return Ok(approvedRequest);
             }
             else return Conflict(approval);//StatusCode(StatusCodes.Status409Conflict);    
@@ -60,7 +60,7 @@ namespace ReimbursementWebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                Request processedRequest = await this._businessLayer.PostRequestsAsync(postRequest);
+                Request? processedRequest = await this._businessLayer.PostRequestsAsync(postRequest);
                 return Ok(processedRequest);
             }
             else return Conflict(postRequest);
@@ -68,11 +68,11 @@ namespace ReimbursementWebAPI.Controllers
 
 
         [HttpPost("LoginAsync")]
-        public async Task<ActionResult<LoginDto>> LoginAsync(LoginDto? login)
+        public async Task<ActionResult<LoginDto?>> LoginAsync(LoginDto login)
         {
             if (ModelState.IsValid)
             {
-                LoginDto SuccessfulLogin = await this._businessLayer.LoginAsync(login);
+                LoginDto? SuccessfulLogin = await this._businessLayer.LoginAsync(login);
                 return Ok(SuccessfulLogin);
             }
             return Conflict(login); 

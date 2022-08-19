@@ -23,11 +23,11 @@ namespace BusinessLayer
             return list;
         }
         //UpdateRequestsAsync method that calls ismanager async repo method to check status and if true it uses the repo update method to change status
-        public async Task<UpdatedRequestDto> UpdateRequestsAsync(ApprovalDto approvalDto)
+        public async Task<UpdatedRequestDto?> UpdateRequestsAsync(ApprovalDto approvalDto)
         {
             if (await this._repoLayer.IsManagerAsync(approvalDto.EmployeeID))
             {
-                UpdatedRequestDto approvedRequest = await this._repoLayer.UpdateRequestsAsync(approvalDto.RequestID, approvalDto.Status);
+                UpdatedRequestDto? approvedRequest = await this._repoLayer.UpdateRequestsAsync(approvalDto.RequestID, approvalDto.Status);
                 return approvedRequest;
             }
             else return null;
@@ -39,15 +39,15 @@ namespace BusinessLayer
             
         }
         //used to insert a row into the request db
-        public async Task<Request> PostRequestsAsync(Request postRequest)
+        public async Task<Request?> PostRequestsAsync(Request postRequest)
         {
             Request processedRequest = await this._repoLayer.PostRequestAsync(postRequest);
             return processedRequest;
         }
 
-        public async Task<LoginDto> LoginAsync(LoginDto login)
+        public async Task<LoginDto?> LoginAsync(LoginDto login)
         {
-            LoginDto SuccessfulLogin = await this._repoLayer.LoginAsync(login);
+            LoginDto? SuccessfulLogin = await this._repoLayer.LoginAsync(login);
             return SuccessfulLogin;
         }
     }
