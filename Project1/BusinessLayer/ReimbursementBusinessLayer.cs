@@ -32,11 +32,23 @@ namespace BusinessLayer
             }
             else return null;
         }
-        public async Task<bool> CheckForPending(Guid requestID)
+        //used to check status and returns true if pending and false if other
+        public async Task<bool> CheckForPendingAsync(Guid requestID)
         {
-            return await this._repoLayer.CheckForPending(requestID);
+            return await this._repoLayer.CheckForPendingAsync(requestID);
             
         }
+        //used to insert a row into the request db
+        public async Task<Request> PostRequestsAsync(Request postRequest)
+        {
+            Request processedRequest = await this._repoLayer.PostRequestAsync(postRequest);
+            return processedRequest;
+        }
 
+        public async Task<LoginDto> LoginAsync(LoginDto login)
+        {
+            LoginDto SuccessfulLogin = await this._repoLayer.LoginAsync(login);
+            return SuccessfulLogin;
+        }
     }
 }

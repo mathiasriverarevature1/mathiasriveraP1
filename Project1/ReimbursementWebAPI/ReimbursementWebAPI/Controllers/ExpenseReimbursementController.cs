@@ -33,10 +33,15 @@ namespace ReimbursementWebAPI.Controllers
                 //return null;
         }
 
+        /// <summary>
+        /// puts request update and allows only managers to approve and deny requests while ensuring no consecutive changes can be made
+        /// </summary>
+        /// <param name="approval"></param>
+        /// <returns></returns>
         [HttpPut("UpdateRequestsAsync")]
         public async Task<ActionResult<UpdatedRequestDto>> UpdateRequestsAsync(ApprovalDto approval)
         {
-            if (await this._businessLayer.CheckForPending(approval.RequestID) && ModelState.IsValid)
+            if (await this._businessLayer.CheckForPendingAsync(approval.RequestID) && ModelState.IsValid)
             {
                 //send approval dto to business layer
                 UpdatedRequestDto approvedRequest = await this._businessLayer.UpdateRequestsAsync(approval);
@@ -45,6 +50,35 @@ namespace ReimbursementWebAPI.Controllers
             else return Conflict(approval);//StatusCode(StatusCodes.Status409Conflict);    
         }
 
+        /// <summary>
+        /// Allows requests to be posted
+        /// </summary>
+        /// <param name="postRequest"></param>
+        /// <returns></returns>
+        [HttpPost("PostRequestsAsync")]
+        public async Task<ActionResult<Request>> PostRequestsAsync(Request postRequest)
+        {
+            if (ModelState.IsValid)
+            {
+                Request processedRequest = await this._businessLayer.PostRequestsAsync(postRequest);
+                return Ok(processedRequest);
+            }
+            else return Conflict(postRequest);
+        }
+
+
+        [HttpPost("LoginAsync")]
+        public async Task<ActionResult<LoginDto>> LoginAsync(LoginDto login)
+        {
+            if (ModelState.IsValid)
+            {
+                LoginDto SuccessfulLogin = await this._businessLayer.LoginAsync(login);
+                return Ok(SuccessfulLogin);
+            }
+            return Conflict(login); 
+       
+        }
+        
 
     }//EOC
 }//EON
