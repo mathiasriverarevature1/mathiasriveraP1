@@ -68,7 +68,7 @@ namespace ReimbursementWebAPI.Controllers
 
 
         [HttpPost("LoginAsync")]
-        public async Task<ActionResult<LoginDto>> LoginAsync(LoginDto login)
+        public async Task<ActionResult<LoginDto>> LoginAsync(LoginDto? login)
         {
             if (ModelState.IsValid)
             {
