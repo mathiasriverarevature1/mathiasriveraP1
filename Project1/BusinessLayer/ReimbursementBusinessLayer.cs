@@ -10,19 +10,19 @@ namespace BusinessLayer
 {
     public class ReimbursementBusinessLayer
     {
-
+        //creates repo layer instance
         private readonly ReimbursementRepoLayer _repoLayer;
         public ReimbursementBusinessLayer()
         {
             this._repoLayer = new ReimbursementRepoLayer();
         }
-
+        //RequestsAsync method that calls repo layer method into list
         public async Task<List<Request>> RequestsAsync(int type)
         {
             List<Request> list = await this._repoLayer.RequestsAsync(type);
             return list;
         }
-
+        //UpdateRequestsAsync method that calls ismanager async repo method to check status and if true it uses the repo update method to change status
         public async Task<UpdatedRequestDto> UpdateRequestsAsync(ApprovalDto approvalDto)
         {
             if (await this._repoLayer.IsManagerAsync(approvalDto.EmployeeID))
@@ -32,5 +32,11 @@ namespace BusinessLayer
             }
             else return null;
         }
+        public async Task<bool> CheckForPending(Guid requestID)
+        {
+            return await this._repoLayer.CheckForPending(requestID);
+            
+        }
+
     }
 }
