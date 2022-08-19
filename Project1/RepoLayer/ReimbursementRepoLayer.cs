@@ -93,7 +93,7 @@ public class ReimbursementRepoLayer
         return null;
     }
 
-    public async Task<bool> CheckForPending(Guid requestID)
+    public async Task<bool> CheckForPendingAsync(Guid requestID)
     {
         SqlConnection conn = new SqlConnection("Server=tcp:mathiasriverasqlserver1.database.windows.net,1433;Initial Catalog=MathiasRiveraSample2;Persist Security Info=False;User ID=MathiasRiveraRevature1;Password=JohnDaniel(9);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
         using (SqlCommand command = new SqlCommand($"SELECT * FROM Request WHERE requestID = @id", conn))
@@ -114,6 +114,51 @@ public class ReimbursementRepoLayer
             conn.Close();
             return false;
         }
+    }
+
+    public async Task<Request> PostRequestAsync(Request postRequest)
+    {
+        SqlConnection conn = new SqlConnection("Server=tcp:mathiasriverasqlserver1.database.windows.net,1433;Initial Catalog=MathiasRiveraSample2;Persist Security Info=False;User ID=MathiasRiveraRevature1;Password=JohnDaniel(9);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+        using (SqlCommand command = new SqlCommand($"INSERT INTO [dbo].[Request] VALUES (@RequestID,@FK_EmployeeID,@Details,@Amount,@Status)", conn))
+        {
+            command.Parameters.AddWithValue("@RequestID", postRequest.RequestID); //SQL inj prevention
+            command.Parameters.AddWithValue("@FK_EmployeeID", postRequest.FK_EmployeeID); //SQL inj prevention
+            command.Parameters.AddWithValue("@Details", postRequest.Details); //SQL inj prevention
+            command.Parameters.AddWithValue("@Amount", postRequest.Amount); //SQL inj prevention
+            command.Parameters.AddWithValue("@Status", postRequest.Status); //SQL inj prevention
+            conn.Open();
+            int ret = await command.ExecuteNonQueryAsync();
+            if(ret == 1)
+            {
+                Request processedRequest = postRequest;
+                conn.Close();   
+                return processedRequest;
+            }
+            else
+            conn.Close();
+            return null;
+        }
+    }
+
+    public async Task<LoginDto> LoginAsync(LoginDto login)
+    {
+        SqlConnection conn = new SqlConnection("Server=tcp:mathiasriverasqlserver1.database.windows.net,1433;Initial Catalog=MathiasRiveraSample2;Persist Security Info=False;User ID=MathiasRiveraRevature1;Password=JohnDaniel(9);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+        using (SqlCommand command = new SqlCommand($"SELECT * FROM Employees WHERE Email = @Email and Password = @Password", conn))
+        {
+            command.Parameters.AddWithValue("@Email", login.Email); //SQL inj prevention
+            command.Parameters.AddWithValue("@Password", login.Password); //SQL inj prevention
+            conn.Open();
+            SqlDataReader? ret = await command.ExecuteReaderAsync();
+            if (ret.Read())
+            {
+                LoginDto l = new LoginDto(ret.GetString(4), ret.GetString(5));
+                conn.Close();
+                return l;
+            }
+        }
+        conn.Close();
+        return null;
+    
     }
 }
 
